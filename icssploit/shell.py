@@ -1,10 +1,10 @@
 import socket
 import telnetlib
-import SimpleHTTPServer
-import BaseHTTPServer
+import http.server
+import http.server
 import threading
 
-from printer import printer_queue
+from .printer import printer_queue
 
 from icssploit.utils import (
     print_info,
@@ -20,7 +20,7 @@ def shell(exploit, architecture="", method="", **params):
         while not printer_queue.empty():
             pass
 
-        cmd = raw_input("cmd > ")
+        cmd = input("cmd > ")
 
         if cmd in ["quit", "exit"]:
             return
@@ -49,7 +49,7 @@ def shell(exploit, architecture="", method="", **params):
             print_info(exploit.execute(cmd))
 
 
-class HttpRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class HttpRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -62,7 +62,7 @@ class HttpRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         return
 
 
-class HttpServer(BaseHTTPServer.HTTPServer):
+class HttpServer(http.server.HTTPServer):
     def serve_forever(self, content):
         self.stop = False
         self.content = content
